@@ -1,0 +1,123 @@
+swagger: '2.0'
+info:
+  contact: {}
+  title: Todo-list Test
+  version: 1.0.0
+host: todo-list-api-gateway-bysebts-projects.vercel.app
+basePath: /
+schemes:
+  - https
+paths:
+  /todo-list:
+    get:
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      description: Get all todo-lists
+      operationId: getAllTodoLists
+      summary: Get all todo-lists
+    post:
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          schema:
+            properties:
+              name:
+                example: Edwin's List
+                type: string
+            type: object
+      responses:
+        '200':
+          description: ''
+      description: Creating a Todo-list
+      operationId: creatingATodoList
+      summary: Creating a Todo-list
+  /todo-list/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        type: string
+    delete:
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      description: Remove a todo-list
+      operationId: removeATodoList
+      summary: Remove a todo-list
+    get:
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      description: Get a todo-list
+      operationId: getATodoList
+      summary: Get a todo-list
+  /todo-list/{id}/items:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        type: string
+    post:
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          schema:
+            properties:
+              content:
+                example: Item content
+                type: string
+            type: object
+      responses:
+        '200':
+          description: ''
+      description: Add an item to a todo-list
+      operationId: addAnItemToATodoList
+      summary: Add an item to a todo-list
+    put:
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          schema:
+            properties:
+              itemId:
+                example: 66975c6ea1ad57cc8fa48e21
+                type: string
+              newContent:
+                example: Updated content
+                type: string
+            type: object
+      responses:
+        '200':
+          description: ''
+      description: Edit an item in a todo-list
+      operationId: editAnItemInATodoList
+      summary: Edit an item in a todo-list
+  /todo-list/{id}/items/{itemId}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        type: string
+      - in: path
+        name: itemId
+        required: true
+        type: string
+    delete:
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      description: Remove an item from a todo-list
+      operationId: removeAnItemFromATodoList
+      summary: Remove an item from a todo-list
+tags: []
