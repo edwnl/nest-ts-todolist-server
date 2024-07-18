@@ -1,8 +1,22 @@
 swagger: '2.0'
 info:
-  contact: {}
-  title: Todo-list Test
+  title: Todo-list API
+  description: |
+    This is a RESTful API for a Todo-list application built with Nest.js and MongoDB.
+    It allows users to create, read, update, and delete todo lists and their items.
+
+    ## Technology Stack
+    - Backend: Nest.js (TypeScript-based Node.js framework)
+    - Database: MongoDB
+    - Deployment: Vercel
+
+    ## GitHub Repository
+    [https://github.com/yourusername/todo-list-api-gateway](https://github.com/yourusername/todo-list-api-gateway)
+
   version: 1.0.0
+  contact:
+    name: Your Name
+    url: https://github.com/yourusername
 host: todo-list-api-gateway-bysebts-projects.vercel.app
 basePath: /
 schemes:
@@ -10,114 +24,226 @@ schemes:
 paths:
   /todo-list:
     get:
-      parameters: []
+      summary: Get all todo-lists
+      description: Retrieves all todo lists stored in the database.
       responses:
         '200':
-          description: ''
-      description: Get all todo-lists
-      operationId: getAllTodoLists
-      summary: Get all todo-lists
+          description: Successful response
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/TodoList'
+        '500':
+          $ref: '#/responses/InternalServerError'
     post:
+      summary: Create a new Todo-list
+      description: Creates a new todo list with the given name.
       consumes:
         - application/json
       parameters:
         - in: body
           name: body
+          required: true
           schema:
-            properties:
-              name:
-                example: Edwin's List
-                type: string
-            type: object
+            $ref: '#/definitions/CreateTodoListDto'
       responses:
-        '200':
-          description: ''
-      description: Creating a Todo-list
-      operationId: creatingATodoList
-      summary: Creating a Todo-list
+        '201':
+          description: Todo list created successfully
+          schema:
+            $ref: '#/definitions/TodoList'
+        '400':
+          $ref: '#/responses/BadRequest'
+        '500':
+          $ref: '#/responses/InternalServerError'
   /todo-list/{id}:
     parameters:
       - in: path
         name: id
         required: true
         type: string
-    delete:
-      parameters: []
-      responses:
-        '200':
-          description: ''
-      description: Remove a todo-list
-      operationId: removeATodoList
-      summary: Remove a todo-list
+        description: The ID of the todo list
     get:
-      parameters: []
+      summary: Get a specific todo-list
+      description: Retrieves a specific todo list by its ID.
       responses:
         '200':
-          description: ''
-      description: Get a todo-list
-      operationId: getATodoList
-      summary: Get a todo-list
+          description: Successful response
+          schema:
+            $ref: '#/definitions/TodoList'
+        '404':
+          $ref: '#/responses/NotFound'
+        '500':
+          $ref: '#/responses/InternalServerError'
+    delete:
+      summary: Remove a todo-list
+      description: Deletes a specific todo list by its ID.
+      responses:
+        '200':
+          description: Todo list deleted successfully
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        '404':
+          $ref: '#/responses/NotFound'
+        '500':
+          $ref: '#/responses/InternalServerError'
   /todo-list/{id}/items:
     parameters:
       - in: path
         name: id
         required: true
         type: string
+        description: The ID of the todo list
     post:
-      consumes:
-        - application/json
-      parameters:
-        - in: body
-          name: body
-          schema:
-            properties:
-              content:
-                example: Item content
-                type: string
-            type: object
-      responses:
-        '200':
-          description: ''
-      description: Add an item to a todo-list
-      operationId: addAnItemToATodoList
       summary: Add an item to a todo-list
-    put:
+      description: Adds a new item to a specific todo list.
       consumes:
         - application/json
       parameters:
         - in: body
           name: body
+          required: true
           schema:
-            properties:
-              itemId:
-                example: 66975c6ea1ad57cc8fa48e21
-                type: string
-              newContent:
-                example: Updated content
-                type: string
-            type: object
+            $ref: '#/definitions/AddItemDto'
+      responses:
+        '201':
+          description: Item added successfully
+          schema:
+            $ref: '#/definitions/TodoList'
+        '400':
+          $ref: '#/responses/BadRequest'
+        '404':
+          $ref: '#/responses/NotFound'
+        '500':
+          $ref: '#/responses/InternalServerError'
+    put:
+      summary: Edit an item in a todo-list
+      description: Edits an existing item in a specific todo list.
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/EditItemDto'
       responses:
         '200':
-          description: ''
-      description: Edit an item in a todo-list
-      operationId: editAnItemInATodoList
-      summary: Edit an item in a todo-list
+          description: Item edited successfully
+          schema:
+            $ref: '#/definitions/TodoList'
+        '400':
+          $ref: '#/responses/BadRequest'
+        '404':
+          $ref: '#/responses/NotFound'
+        '500':
+          $ref: '#/responses/InternalServerError'
   /todo-list/{id}/items/{itemId}:
     parameters:
       - in: path
         name: id
         required: true
         type: string
+        description: The ID of the todo list
       - in: path
         name: itemId
         required: true
         type: string
+        description: The ID of the item to remove
     delete:
-      parameters: []
+      summary: Remove an item from a todo-list
+      description: Removes a specific item from a todo list.
       responses:
         '200':
-          description: ''
-      description: Remove an item from a todo-list
-      operationId: removeAnItemFromATodoList
-      summary: Remove an item from a todo-list
-tags: []
+          description: Item removed successfully
+          schema:
+            $ref: '#/definitions/TodoList'
+        '404':
+          $ref: '#/responses/NotFound'
+        '500':
+          $ref: '#/responses/InternalServerError'
+definitions:
+  TodoList:
+    type: object
+    properties:
+      _id:
+        type: string
+        description: The unique identifier for the todo list (MongoDB ObjectId)
+      name:
+        type: string
+        description: The name of the todo list
+      items:
+        type: array
+        items:
+          $ref: '#/definitions/TodoItem'
+    required:
+      - _id
+      - name
+      - items
+  TodoItem:
+    type: object
+    properties:
+      _id:
+        type: string
+        description: The unique identifier for the todo item (MongoDB ObjectId)
+      content:
+        type: string
+        description: The content of the todo item
+    required:
+      - _id
+      - content
+  CreateTodoListDto:
+    type: object
+    properties:
+      name:
+        type: string
+        description: The name of the new todo list
+    required:
+      - name
+  AddItemDto:
+    type: object
+    properties:
+      content:
+        type: string
+        description: The content of the new todo item
+    required:
+      - content
+  EditItemDto:
+    type: object
+    properties:
+      itemId:
+        type: string
+        description: The ID of the item to edit (MongoDB ObjectId)
+      newContent:
+        type: string
+        description: The updated content for the todo item
+    required:
+      - itemId
+      - newContent
+responses:
+  BadRequest:
+    description: Bad Request - The request was invalid or cannot be served.
+    schema:
+      $ref: '#/definitions/Error'
+  NotFound:
+    description: The specified resource was not found.
+    schema:
+      $ref: '#/definitions/Error'
+  InternalServerError:
+    description: Internal Server Error - The server encountered an unexpected condition that prevented it from fulfilling the request.
+    schema:
+      $ref: '#/definitions/Error'
+  Error:
+    type: object
+    properties:
+      message:
+        type: string
+      error:
+        type: string
+      statusCode:
+        type: integer
+    required:
+      - message
+      - statusCode
