@@ -21,9 +21,16 @@ host: todo-list-api-gateway-bysebts-projects.vercel.app
 basePath: /
 schemes:
   - https
+tags:
+  - name: Todo Lists
+    description: Operations about todo lists
+  - name: Todo Items
+    description: Operations about items within todo lists
 paths:
   /todo-list:
     get:
+      tags:
+        - Todo Lists
       summary: Get all todo-lists
       description: Retrieves all todo lists stored in the database.
       responses:
@@ -36,6 +43,8 @@ paths:
         '500':
           $ref: '#/responses/InternalServerError'
     post:
+      tags:
+        - Todo Lists
       summary: Create a new Todo-list
       description: Creates a new todo list with the given name.
       consumes:
@@ -63,6 +72,8 @@ paths:
         type: string
         description: The ID of the todo list
     get:
+      tags:
+        - Todo Lists
       summary: Get a specific todo-list
       description: Retrieves a specific todo list by its ID.
       responses:
@@ -75,6 +86,8 @@ paths:
         '500':
           $ref: '#/responses/InternalServerError'
     delete:
+      tags:
+        - Todo Lists
       summary: Remove a todo-list
       description: Deletes a specific todo list by its ID.
       responses:
@@ -97,6 +110,8 @@ paths:
         type: string
         description: The ID of the todo list
     post:
+      tags:
+        - Todo Items
       summary: Add an item to a todo-list
       description: Adds a new item to a specific todo list.
       consumes:
@@ -119,6 +134,8 @@ paths:
         '500':
           $ref: '#/responses/InternalServerError'
     put:
+      tags:
+        - Todo Items
       summary: Edit an item in a todo-list
       description: Edits an existing item in a specific todo list.
       consumes:
@@ -153,6 +170,8 @@ paths:
         type: string
         description: The ID of the item to remove
     delete:
+      tags:
+        - Todo Items
       summary: Remove an item from a todo-list
       description: Removes a specific item from a todo list.
       responses:
@@ -222,6 +241,18 @@ definitions:
     required:
       - itemId
       - newContent
+  Error:
+    type: object
+    properties:
+      message:
+        type: string
+      error:
+        type: string
+      statusCode:
+        type: integer
+    required:
+      - message
+      - statusCode
 responses:
   BadRequest:
     description: Bad Request - The request was invalid or cannot be served.
@@ -235,15 +266,3 @@ responses:
     description: Internal Server Error - The server encountered an unexpected condition that prevented it from fulfilling the request.
     schema:
       $ref: '#/definitions/Error'
-  Error:
-    type: object
-    properties:
-      message:
-        type: string
-      error:
-        type: string
-      statusCode:
-        type: integer
-    required:
-      - message
-      - statusCode
